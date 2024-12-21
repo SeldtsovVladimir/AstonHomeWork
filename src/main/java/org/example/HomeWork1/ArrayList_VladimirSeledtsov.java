@@ -3,32 +3,55 @@ package org.example.HomeWork1;
 import java.util.Arrays;
 import java.util.Comparator;
 
-
+/**
+ * Реализация динамического списка, предназначенного для хранения и управления элементами
+ * обобщенного типа {@code E}. Предоставляет методы для добавления, удаления, получения
+ * и манипуляции элементами в структуре, похожей на список.
+ *
+ * Основные возможности:
+ * - Динамическое увеличение размера массива при добавлении новых элементов.
+ * - Операции добавления элементов по индексу, удаления, сортировки.
+ * - Реализация сортировки методом "быстрой сортировки" с использованием {@link Comparator}.
+ * - Утилитарные методы: проверка, отсортирован ли список, изменение размера списка с помощью {@code split}.
+ *
+ * @param <E> тип элементов в списке
+ */
 public class ArrayList_VladimirSeledtsov<E> implements IntensiveList<E> {
-    private Object[] elements; // Массив для хранения элементов
-    private int size; // Текущий размер списка
-    private static final int DEFAULT_CAPACITY = 15; // Начальная вместимость
-
+    private Object[] elements;
+    private int size;
+    private static final int DEFAULT_CAPACITY = 15;
 
     public ArrayList_VladimirSeledtsov() {
         elements = new Object[DEFAULT_CAPACITY];
         size = 0;
     }
-
-
+    /**
+     * Возвращает количество элементов в списке.
+     *
+     * @return размер списка
+     */
     @Override
     public int size() {
         return size;
     }
-
-
+    /**
+     * Добавляет новый элемент в конец списка.
+     *
+     * @param element элемент, который нужно добавить
+     */
     @Override
     public void add(E element) {
         ensureCapacity(); // Увеличиваем вместимость, если нужно
         elements[size++] = element;
     }
 
-
+    /**
+     * Вставляет элемент в заданный индекс, сдвигая последующие элементы вправо.
+     *
+     * @param index   индекс, куда нужно вставить элемент
+     * @param element элемент для добавления
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона
+     */
     @Override
     public void add(int index, E element) {
         validateIndexForAdd(index); // Проверяем индекс
@@ -38,14 +61,27 @@ public class ArrayList_VladimirSeledtsov<E> implements IntensiveList<E> {
         elements[index] = element;
         size++;
     }
-
+    /**
+     * Возвращает элемент по указанному индексу.
+     *
+     * @param index индекс элемента
+     * @return элемент, расположенный по указанному индексу
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона
+     */
 
     @Override
     public E get(int index) {
         validateIndex(index);
         return elementAt(index);
     }
-
+    /**
+     * Заменяет элемент по указанному индексу на новый элемент.
+     *
+     * @param index   индекс заменяемого элемента
+     * @param element новый элемент
+     * @return старый элемент, который находился по указанному индексу
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона
+     */
 
     @Override
     public E set(int index, E element) {
@@ -55,7 +91,13 @@ public class ArrayList_VladimirSeledtsov<E> implements IntensiveList<E> {
         return oldElement;
     }
 
-
+    /**
+     * Удаляет элемент по указанному индексу, сдвигая последующие элементы влево.
+     *
+     * @param index индекс удаляемого элемента
+     * @return удаленный элемент
+     * @throws IndexOutOfBoundsException если индекс выходит за пределы допустимого диапазона
+     */
     @Override
     public E remove(int index) {
         validateIndex(index);
@@ -65,13 +107,19 @@ public class ArrayList_VladimirSeledtsov<E> implements IntensiveList<E> {
         return removedElement;
     }
 
-
+    /**
+     * Очищает список, удаляя все элементы.
+     */
     @Override
     public void clear() {
         elements = new Object[DEFAULT_CAPACITY]; // Создаем новый массив
         size = 0;
     }
-
+    /**
+     * Сортирует список методом быстрой сортировки, используя заданный {@link Comparator}.
+     *
+     * @param comparator компаратор для сравнения элементов
+     */
 
     @Override
     public void quickSort(Comparator<E> comparator) {
@@ -79,7 +127,11 @@ public class ArrayList_VladimirSeledtsov<E> implements IntensiveList<E> {
             quickSort(0, size - 1, comparator);
         }
     }
-
+    /**
+     * Проверяет, отсортирован ли список в порядке возрастания.
+     *
+     * @return {@code true}, если список отсортирован, иначе {@code false}
+     */
     private void quickSort(int low, int high, Comparator<E> comparator) {
         if (low < high) {
             int pivotIndex = partition(low, high, comparator);
@@ -106,7 +158,11 @@ public class ArrayList_VladimirSeledtsov<E> implements IntensiveList<E> {
         elements[i] = elements[j];
         elements[j] = temp;
     }
-
+    /**
+     * Проверяет, отсортирован ли список в порядке возрастания.
+     *
+     * @return {@code true}, если список отсортирован, иначе {@code false}
+     */
 
     @Override
     public boolean isSorted() {
@@ -122,7 +178,12 @@ public class ArrayList_VladimirSeledtsov<E> implements IntensiveList<E> {
         return true;
     }
 
-
+    /**
+     * Урезает список до указанного размера, удаляя все элементы за его пределами.
+     *
+     * @param newSize новый размер списка
+     * @throws IllegalArgumentException если новый размер недопустим
+     */
     @Override
     public void split(int newSize) {
         if (newSize < 0 || newSize > size) {
@@ -132,24 +193,42 @@ public class ArrayList_VladimirSeledtsov<E> implements IntensiveList<E> {
         size = newSize;
     }
 
+    /**
+     * Увеличивает вместимость внутреннего массива, если нужно.
+     */
     private void ensureCapacity() {
         if (size == elements.length) {
             elements = Arrays.copyOf(elements, elements.length * 2); // Увеличиваем размер
         }
     }
-
+    /**
+     * Проверяет, что индекс находится в допустимом диапазоне для существующих элементов.
+     *
+     * @param index проверяемый индекс
+     * @throws IndexOutOfBoundsException если индекс недопустим
+     */
     private void validateIndex(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
-
+    /**
+     * Проверяет, что индекс находится в допустимом диапазоне для добавления элементов.
+     *
+     * @param index проверяемый индекс
+     * @throws IndexOutOfBoundsException если индекс недопустим
+     */
     private void validateIndexForAdd(int index) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
-
+    /**
+     * Возвращает элемент по указанному индексу.
+     *
+     * @param index индекс элемента
+     * @return элемент, расположенный по указанному индексу
+     */
     @SuppressWarnings("unchecked")
     private E elementAt(int index) {
         return (E) elements[index];
